@@ -1,7 +1,7 @@
 # ProjectAllocation
 
 ## Getting started
-Create 2 csv files or ammend them with actual data
+Create 2 csv files or amend them with actual data
 - `student_preferences.csv` with 6 columns: student, preference1, preference2, preference3, preference4, preference5
 - `project_capacities.csv` with 3 columns: project, capacity, supervisor
 
@@ -15,7 +15,7 @@ The output are two csv files
 Run the random seed searching to maximise student happiness (with parallel processing) using `python seed_search_par.py`
 
 ## Allocation Algorithm
-The allocation is conducted using the Gale-Shapley Algorithm, where projects are the "proposors" and the students are the "acceptors".
+The allocation is conducted using the Gale-Shapley Algorithm, where projects are the "proposers" and the students are the "acceptors".
 
 ![gsalg](https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Gale-Shapley.gif/731px-Gale-Shapley.gif)
 
@@ -25,9 +25,9 @@ The quality of the matching is measured using the `rate_matching` function. This
 
 $$ S = 10\sum_{i=1}^N r_i^{-2} $$
 
- where $r_i$ is rank preference of a student (e.g. 1 is top preference, 3 is third preference), N is the number of students, 10 is an arbitary scaling factor for readability. We will run the algorithm multiple times to choose the best matching that maximises student happiness.
+ where $r_i$ is rank preference of a student (e.g. 1 is top preference, 3 is third preference), N is the number of students, 10 is an arbitrary scaling factor for readability. We will run the algorithm multiple times to choose the best matching that maximises student happiness.
 
-For a complete matching to be guaranteed, all students would have to provide preferences for all projects. However, this is inpractical. Thus in particular circumstances, such as when too many students have the exact same preferences, it is possible that some students are not allocated to any of their preferences. In these cases, allocations will be manually conducted to the remaining projects.
+For a complete matching to be guaranteed, all students would have to provide preferences for all projects. However, this is impractical. Thus in particular circumstances, such as when too many students have the exact same preferences, it is possible that some students are not allocated to any of their preferences. In these cases, allocations will be manually conducted to the remaining projects.
 
 ## Example
 Example student preferences and project capacities have been provided to demonstrate the allocation algorithm in action.
