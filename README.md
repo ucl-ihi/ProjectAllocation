@@ -22,8 +22,10 @@ The allocation is conducted using the Gale-Shapley Algorithm, where projects are
 In order for all students to have equal opportunity to be allocated to their desired project and have enough time to speak with potential supervisors, students are uniformly randomly selected (i.e. the preferences of projects to select students are random). 
 
 The quality of the matching is measured using the `rate_matching` function. This calculates a score per student and their preference, the overall score of the matching is 
-$$S = \sum_{i=1}^N s_i = 10 r_i^{-2}$$
- where $r_i$ is rank preference of a student (e.g. 1 is top preference, 3 is third preference). We will run the algorithm multiple times to choose the best matching that maximises student happiness.
+
+$$ S = 10\sum_{i=1}^N r_i^{-2} $$
+
+ where $r_i$ is rank preference of a student (e.g. 1 is top preference, 3 is third preference), N is the number of students, 10 is an arbitary scaling factor for readability. We will run the algorithm multiple times to choose the best matching that maximises student happiness.
 
 For a complete matching to be guaranteed, all students would have to provide preferences for all projects. However, this is inpractical. Thus in particular circumstances, such as when too many students have the exact same preferences, it is possible that some students are not allocated to any of their preferences. In these cases, allocations will be manually conducted to the remaining projects.
 
