@@ -75,7 +75,10 @@ def rate_matching(students):
 
 
 # Gale-Shapley Algorithm implementation
-def gale_shapley(students, projects, n_prefs=5):
+def gale_shapley(students, projects, n_prefs=None):
+    # By default, use all preferences
+    if n_prefs == None:
+        n_prefs = len(students[0].preferences)
 
     # Initialise all students and projects as unmatched
     # Initialise applicants for each project (assume project students ranked in order of preference for project)
@@ -130,23 +133,26 @@ def gale_shapley(students, projects, n_prefs=5):
                 student.rank_choice = 1 + student.preferences.index(student.matched_project)
 
 
-def find_best_seed_matching(seed_range, results = None):
+def find_best_seed_matching(seed_range, results = None, N_PREFERENCES_TO_CONSIDER = None):
     # run to get best matching
     best_n_student_without_matching = 1000
     best_seed = 0
     best_matching_rating = 0
 
     # load data
-    N_PREFERENCES_TO_CONSIDER = 5
     student_preferences = pd.read_csv("student_preferences.csv")
     project_capacities = pd.read_csv("project_capacities.csv")
+
+    # By default, we will consider all given preferences
+    if N_PREFERENCES_TO_CONSIDER is None:
+        N_PREFERENCES_TO_CONSIDER = student_preferences.shape[1] - 1
 
     for s in seed_range:
         students = []
         projects = []
 
         for index, row in student_preferences.iterrows():
-            students.append(Student(row["student"], row[1:N_PREFERENCES_TO_CONSIDER+1].tolist()))
+            students.append(Student(row["student"], row[1:].tolist()))
             
         for index, row in project_capacities.iterrows():
             projects.append(Project(row["project"], row["capacity"]))
@@ -157,7 +163,7 @@ def find_best_seed_matching(seed_range, results = None):
 
         # run matching
         shuffle_students(students)
-        gale_shapley(students, projects, n_prefs=5)
+        gale_shapley(students, projects, n_prefs=N_PREFERENCES_TO_CONSIDER)
 
 
         # save as pandas

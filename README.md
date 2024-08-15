@@ -2,7 +2,7 @@
 
 ## Getting started
 Create 2 csv files or amend them with actual data
-- `student_preferences.csv` with 6 columns: student, preference1, preference2, preference3, preference4, preference5
+- `student_preferences.csv` with 1 + number of preferences columns: student, preference1, preference2, ..., preferenceN
 - `project_capacities.csv` with 3 columns: project, capacity, supervisor
 
 Run the allocation algorithm in `matching.ipynb` file.
