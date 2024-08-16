@@ -1,15 +1,16 @@
 import pandas as pd
 import numpy as np
 import multiprocessing
-
+import pandas as pd
 
 # Define student and project classes
 class Student:
     def __init__(self, id, preferences):
         self.id = id
         self.preferences = preferences
+        self.offers = []
         self.matched_project = None
-        self.rank_choice = 1 # 1 indexed for readability
+        self.rank_choice = 0
 
 class Project:
     def __init__(self, id, capacity):
@@ -17,9 +18,10 @@ class Project:
         self.capacity = capacity
         self.matched_students = []
         self.applicant_students = []
+        self.rejected_students = []
 
 # Define functions to help algorithm
-def assign_student_to_project(student, project):
+def assign_project_to_student(student, project):
     project.matched_students.append(student)
     student.matched_project = project
 
@@ -31,9 +33,9 @@ def remove_student_from_project(student, project):
 def check_matching(students, projects):
     # check no student is matched to more than one project
     for s in students:
-        if s.matched_project is not None:
+        if s.matched_project != None:
             for p in projects:
-                if p.id != s.matched_project.id and p == s.matched_project:
+                if p.id != s.matched_project and p == s.matched_project:
                     print(f"Major Warning - Student {s.id} is matched to multiple projects")
                     return False
             
@@ -45,11 +47,11 @@ def check_matching(students, projects):
         
     # warning - check if projects were preferred by students
     for s in students:
-        if s.matched_project is not None and s.matched_project.id not in s.preferences:
+        if s.matched_project != None and s.matched_project not in s.preferences:
             print(f"Minor Warning - Student {s.id} is matched to a project they did not prefer")
     
     # warning - check any unassigned students
-    if any(s.matched_project is None for s in students):
+    if any(s.matched_project == None for s in students):
         print(f"Minor Warning - Some students are not matched to any project")
         
     # valid
@@ -58,72 +60,77 @@ def check_matching(students, projects):
 
 # Function to shuffle students
 def shuffle_students(students):
+    # shuffle students
     np.random.shuffle(students)
 
 # rate matching
 def rate_matching(students):
     score = 0
+    # rate matching
     for s in students:
-        if s.matched_project is not None:
+        if s.matched_project != None:
             score += 10 * s.rank_choice **-2
+    
     return score
 
 
 # Gale-Shapley Algorithm implementation
 def gale_shapley(students, projects, n_prefs=None):
     # By default, use all preferences
-    if n_prefs is None:
+    if n_prefs == None:
         n_prefs = len(students[0].preferences)
 
-    # Initialize all students and projects as unmatched
+    # Initialise all students and projects as unmatched
+    # Initialise applicants for each project (assume project students ranked in order of preference for project)
     for student in students:
         student.matched_project = None
     for project in projects:
         project.matched_students = []
+        project.applicant_students = [s for s in students if project.id in s.preferences[:n_prefs]]
+    
+    # stop while loop when every project either reaches capacity or has no more applicants
+    continue_condition = True
 
-    # Create a dictionary to easily access projects by their id
-    project_dict = {p.id: p for p in projects}
-
-    # Continue until all students have proposed to all their preferences
-    unconsidered_students = students.copy()
     round_count = 0
 
-    while unconsidered_students and round_count < (len(students) * len(projects)):
+    while continue_condition:
         round_count += 1
-        
-        for student in unconsidered_students.copy():
-            if student.rank_choice <= min(n_prefs, len(student.preferences)):
-                # Student proposes to their preference
-                project_id = student.preferences[student.rank_choice - 1]
-                project = project_dict[project_id]
-                
-                if project.capacity == 0:
-                    # Project is removed, move to next preference
-                    student.rank_choice += 1
-                elif len(project.matched_students) < project.capacity:
-                    # Project has capacity, accept the student
-                    assign_student_to_project(student, project)
-                    unconsidered_students.remove(student)
-                else:
-                    # Project is at capacity, compare with current matches
-                    # The student with the lowest rank choice (highest preference) is the preferred student
-                    # e.g. studentA.rank_choice = 1, studentB.rank_choice = 2, studentA is preferred
-                    worst_match = max(project.matched_students, key=lambda s: s.rank_choice)
-                    if student.rank_choice < worst_match.rank_choice:
-                        # New student is preferred, swap
-                        remove_student_from_project(worst_match, project)
-                        assign_student_to_project(student, project)
-                        unconsidered_students.remove(student)
-                        unconsidered_students.append(worst_match)
-                    else:
-                        # Student is rejected, move to next preference
-                        student.rank_choice += 1
-            else:
-                # Student has proposed to all preferences, remove from unconsidered_students
-                student.rank_choice = 0
-                unconsidered_students.remove(student)
+        # print(f"\nround {round_count} =====================")
+        # projects propose to the top student who applied to them
+        for p in projects:
+            
+            if (len(p.applicant_students) !=0 ) & (len(p.matched_students) < p.capacity):
+                s = p.applicant_students.pop(0)
+                s.offers.append(p.id)
+                assign_project_to_student(s, p)
 
-    return students, projects
+        
+        # each student accepts best offer and rejects the rest
+        for s in students:
+            # print(f"Student {s.id} offers: {s.offers}")
+            if s.offers:
+                s.offers.sort(key=lambda x: s.preferences.index(x))
+                best_offer = s.offers[0]
+                for offer in s.offers:
+                    if offer != best_offer:
+                        project = next(p for p in projects if p.id == offer)
+                        project.rejected_students.append(s)
+                        remove_student_from_project(s, project)
+                s.offers = [best_offer]
+
+        # check if any projects have capacity and unseen applications
+        any_unseen_applications = np.array([len(p.applicant_students) > 0 for p in projects])
+        any_project_with_capacity = np.array([p.capacity > len(p.matched_students) for p in projects])
+        continue_condition = any(any_unseen_applications & any_project_with_capacity)
+        
+        if round_count > (len(students) * len(projects)):
+            break
+
+        # clean up
+        for student in students:
+            if student.offers:
+                student.matched_project = student.offers[0]
+                student.rank_choice = 1 + student.preferences.index(student.matched_project)
 
 
 def find_best_seed_matching(seed_range, results = None, N_PREFERENCES_TO_CONSIDER = None):
@@ -160,13 +167,10 @@ def find_best_seed_matching(seed_range, results = None, N_PREFERENCES_TO_CONSIDE
 
 
         # save as pandas
-        matching_student_df = pd.DataFrame(columns=["student", "project", "rank_choice", "preference"])
+        matching_student_df = pd.DataFrame(columns=["student", "project"])
         for i in range(len(students)):
             student = students[i]
-            if student.matched_project is not None:
-                matching_student_df.loc[i] = [student.id, student.matched_project.id, student.rank_choice, student.preferences]
-            else: 
-                matching_student_df.loc[i] = [student.id, None, 0, student.preferences]
+            matching_student_df.loc[i] = [student.id, student.matched_project]
 
         matching_project_df = pd.DataFrame(columns=["project", "students", "capacity"])
         for i in range(len(projects)):

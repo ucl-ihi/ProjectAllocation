@@ -1,14 +1,14 @@
 project,students,capacity,supervisor
-Project1,[11],1,A
+Project1,[1],1,A
 Project2,[19],1,A
 Project3,[6],1,A
 Project4,[3],1,A
 Project5,"[13, 12]",2,B
 Project6,[9],1,B
-Project7,"[20, 15]",2,B
+Project7,[15],2,B
 Project8,[],3,B
-Project9,[],1,C
-Project10,[2],1,C
+Project9,[2],1,C
+Project10,[20],1,C
 Project11,[5],1,C
 Project12,[7],1,C
 Project13,[17],1,D
@@ -18,12 +18,12 @@ Project16,[],1,D
 Project17,[8],1,E
 Project18,[],3,E
 Project19,[10],1,E
-Project20,"[4, 1]",2,E
+Project20,"[11, 4]",2,E
 Project21,[18],1,F
 Project22,[14],1,F
 Project23,[],1,G
 Project24,[],1,G
 Project25,[],1,G
-Project26,[],1,H
+Project26,[],0,H
 Project27,[],1,H
 Project28,[],1,H

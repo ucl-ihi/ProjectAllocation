@@ -15,7 +15,9 @@ The output are two csv files
 Run the random seed searching to maximise student happiness (with parallel processing) using `python seed_search_par.py`
 
 ## Allocation Algorithm
-The allocation is conducted using the Gale-Shapley Algorithm, where projects are the "proposers" and the students are the "acceptors".
+The allocation is conducted using the Gale-Shapley Algorithm, where students are the "proposers" and the projects are the "acceptors". This setup will be student-optimal, meaning students will generally have their most preferred choice and no student allocated to a more desired project would have a lower preference than you.
+
+For example project 1 with one capacity, it is student 1's 1st choice, student 2's 2nd choice, and student 11's 1st choice. Only students 1 or 11 will be allocated to project 1.
 
 ![gsalg](https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Gale-Shapley.gif/731px-Gale-Shapley.gif)
 
