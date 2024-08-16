@@ -1,18 +1,20 @@
 # ProjectAllocation
+The purpose of this algorithm is to assign students to projects based on their preferences. The allocation is done in such a way that it seeks to maximize the number of students whose preferred choices are fulfilled. This follows the principle of utilitarianism, developed by UCL founder ![Jeremy Bentham](https://en.wikipedia.org/wiki/Jeremy_Bentham), which states that *"the best allocation of projects is the one that ensures the greatest good for the most students."*
+
 
 ## Getting started
-Create 2 csv files or amend them with actual data
+Create 2 csv files or amend those included in the repository with actual data
 - `student_preferences.csv` with 1 + number of preferences columns: student, preference1, preference2, ..., preferenceN
 - `project_capacities.csv` with 3 columns: project, capacity, supervisor
 
 Run the allocation algorithm in `matching.ipynb` file.
 
-The output are two csv files
+The output are two csv files with the results after the alogrithm is run once.
 - `matching_student.csv` for a student focused view with 4 columns: student, project allocated, preference rank of allocation, list of preferences
 - `matching_project.csv` for a project focused view with 4 columns: project, list of student allocated, capacity, supervisor
 
 ### Random seed searching
-Run the random seed searching to maximise student happiness (with parallel processing) using `python seed_search_par.py`
+Run the random seed searching to maximise student happiness (with parallel processing) using `python seed_search_par.py`. This script runs the process 16.000 times, testing different starting points of the matching algorithm, and returning the one match, with the start seed, that maximises happiness :blush:, across all those iterations. 
 
 ## Allocation Algorithm
 The allocation is conducted using the Gale-Shapley Algorithm, where students are the "proposers" and the projects are the "acceptors". This setup will be student-optimal, meaning students will generally have their most preferred choice and no student allocated to a more desired project would have a lower preference than you.
@@ -28,7 +30,8 @@ The quality of the matching is measured using the `rate_matching` function. This
 $$ S = 10\sum_{i=1}^N r_i^{-2} $$
 
  where $r_i$ is rank preference of a student (e.g. 1 is top preference, 3 is third preference), N is the number of students, 10 is an arbitrary scaling factor for readability. We will run the algorithm multiple times to choose the best matching that maximises student happiness.
-
+ 
+### Limitations
 For a complete matching to be guaranteed, all students would have to provide preferences for all projects. However, this is impractical. Thus in particular circumstances, such as when too many students have the exact same preferences, it is possible that some students are not allocated to any of their preferences. In these cases, allocations will be manually conducted to the remaining projects.
 
 ## Example
