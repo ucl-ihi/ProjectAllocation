@@ -1,5 +1,5 @@
 # ProjectAllocation
-The purpose of this algorithm is to assign students to projects based on their preferences. The allocation is done in such a way that it seeks to maximize the number of students whose preferred choices are fulfilled. This follows the principle of utilitarianism, developed by UCL founder ![Jeremy Bentham](https://en.wikipedia.org/wiki/Jeremy_Bentham), which states that *"the best allocation of projects is the one that ensures the greatest good for the most students."*
+The purpose of this algorithm is to assign students to projects based on their preferences. The allocation is done in such a way that it seeks to maximize the number of students whose preferred choices are fulfilled. This follows the principle of utilitarianism, developed by UCL founder [Jeremy Bentham](https://en.wikipedia.org/wiki/Jeremy_Bentham), which states that *"the best allocation of projects is the one that ensures the greatest good for the most students."*
 
 
 ## Getting started
@@ -14,7 +14,7 @@ The output are two csv files with the results after the alogrithm is run once.
 - `matching_project.csv` for a project focused view with 4 columns: project, list of student allocated, capacity, supervisor
 
 ### Random seed searching
-Run the random seed searching to maximise student happiness (with parallel processing) using `python seed_search_par.py`. This script runs the process 16.000 times, testing different starting points of the matching algorithm, and returning the one match, with the start seed, that maximises happiness :blush:, across all those iterations. 
+Run the random seed searching to maximise student happiness (with parallel processing) using `python seed_search_par.py`. This script runs the process 16.000 times, testing different orders of students as proposers of the matching, and returning the one match, with the start seed, that maximises happiness :blush:, across all those iterations. 
 
 ## Allocation Algorithm
 The allocation is conducted using the Gale-Shapley Algorithm, where students are the "proposers" and the projects are the "acceptors". This setup will be student-optimal, meaning students will generally have their most preferred choice and no student allocated to a more desired project would have a lower preference than you.
