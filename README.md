@@ -7,14 +7,14 @@ Create 2 csv files or amend those included in the repository with actual data
 - `student_preferences.csv` with 1 + number of preferences columns: student, preference1, preference2, ..., preferenceN
 - `project_capacities.csv` with 3 columns: project, capacity, supervisor
 
-Run the allocation algorithm in `matching.ipynb` file.
+Run the allocation algorithm in `easy_matching.ipynb` file.
 
 The output are two csv files with the results after the alogrithm is run once.
 - `matching_student.csv` for a student focused view with 4 columns: student, project allocated, preference rank of allocation, list of preferences
 - `matching_project.csv` for a project focused view with 4 columns: project, list of student allocated, capacity, supervisor
 
 ### Random seed searching
-Run the random seed searching to maximise student happiness (with parallel processing) using `python seed_search_par.py`. This script runs the process 16.000 times, testing different orders of students as proposers of the matching, and returning the one match, with the start seed, that maximises happiness :blush:, across all those iterations. 
+The random seed searching searches to maximise student happiness (with parallel processing). This runs the process 16,000 times, testing different orders of students as proposers of the matching, and returning the one match, with the start seed, that maximises happiness :blush:, across all those iterations. 
 
 ## Allocation Algorithm
 The allocation is conducted using the Gale-Shapley Algorithm, where students are the "proposers" and the projects are the "acceptors". This setup will be student-optimal, meaning students will generally have their most preferred choice and no student allocated to a more desired project would have a lower preference than you.
@@ -35,7 +35,7 @@ $$ S = 10\sum_{i=1}^N r_i^{-2} $$
 For a complete matching to be guaranteed, all students would have to provide preferences for all projects. However, this is impractical. Thus in particular circumstances, such as when too many students have the exact same preferences, it is possible that some students are not allocated to any of their preferences. In these cases, allocations will be manually conducted to the remaining projects.
 
 ## Example
-Example student preferences and project capacities have been provided to demonstrate the allocation algorithm in action.
+Demo and example student preferences and project capacities have been provided to demonstrate the allocation algorithm in action. The results of the example are `matching_project.csv` and `matching_student.csv`
 
 ## FAQ
 

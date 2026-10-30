@@ -192,7 +192,7 @@ def find_best_seed_matching(seed_range, results = None, N_PREFERENCES_TO_CONSIDE
 
 
 if __name__ == "__main__":
-
+    # run across 16000 seeds to search for best seed
     with multiprocessing.Manager() as manager:
         results = manager.list()
         p1 = multiprocessing.Process(target=find_best_seed_matching, args=(range(0, 2000), results))
